@@ -1,4 +1,7 @@
-jasy-appcache
-=============
+AppCache for JASY
+=================
 
-App cache support for jasy projects
+Browser app cache support for jasy builds.
+jasy-appcache is made available under Apache 2.0 license.
+
+**This is still an ALPHA version**
