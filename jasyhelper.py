@@ -27,7 +27,10 @@ def cacheManifest(scripts = ["script/application-%s.js"], htmlfile = "index.html
 CACHE:
 {htmlfile}
 {kernel}
-{scripts}"""
+{scripts}
+
+NETWORK:
+*"""
 
 	htmlcache = '<!DOCTYPE html><html manifest="%s"></html>'
 
