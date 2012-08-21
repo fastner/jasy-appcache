@@ -27,7 +27,7 @@
     /**
      * {Boolean} Start application caching in browser, returns <code>false</code> if app cache is not supported.
      */
-    start : function() {
+    start : function(baseURL) {
       if (!!appCache) {
         var iframe = document.createElement("iframe");
         core.bom.Style.set(iframe, {
@@ -36,8 +36,10 @@
           width: "1px",
           height: "1px"
         });
-        
-        iframe.src = 'index-' + core.Env.CHECKSUM + '.html';
+
+        var src = baseURL ? baseURL : '';
+        src += 'index-' + core.Env.CHECKSUM + '.html';
+        iframe.src = src;
         
         document.body.appendChild(iframe);
         
