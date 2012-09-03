@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+import time
+
 @share
 def cacheManifest(scripts = ["script/application-%s.js"], htmlfile = "index.html", kernel = "script/kernel.js"):
 	timestamp = time.time()
