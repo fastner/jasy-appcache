@@ -20,7 +20,7 @@
 import time
 
 @share
-def cacheManifest(session, scripts = ["script/application-%s.js"], htmlfile = "index.html", kernel = "script/kernel.js"):
+def cacheManifest(state, scripts = ["script/application-%s.js"], htmlfile = "index.html", kernel = "script/kernel.js"):
 	timestamp = time.time()
 	appcache = """CACHE MANIFEST
 
@@ -38,7 +38,7 @@ NETWORK:
 	htmlcache = '<!DOCTYPE html><html manifest="%s"></html>'
 
 	# Create an application cache file for each permutation
-	for permutation in session.permutate():
+	for permutation in state.session.permutate():
 		# Set options
 		checksum = permutation.getChecksum()
 		
@@ -47,7 +47,7 @@ NETWORK:
 			scriptFiles += (script % checksum) + "\n"
 		
 		manifestFilename = "appcache-%s.manifest" % (checksum)
-		writeFile(manifestFilename, appcache.format(version=str(timestamp), htmlfile=htmlfile, kernel=kernel, scripts=scriptFiles))
+		state.writeFile(manifestFilename, appcache.format(version=str(timestamp), htmlfile=htmlfile, kernel=kernel, scripts=scriptFiles))
 		
-		writeFile("index-%s.html" % (checksum), htmlcache % (manifestFilename))
+		state.writeFile("index-%s.html" % (checksum), htmlcache % (manifestFilename))
 
