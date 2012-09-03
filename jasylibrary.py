@@ -20,7 +20,7 @@
 import time
 
 @share
-def cacheManifest(scripts = ["script/application-%s.js"], htmlfile = "index.html", kernel = "script/kernel.js"):
+def cacheManifest(session, scripts = ["script/application-%s.js"], htmlfile = "index.html", kernel = "script/kernel.js"):
 	timestamp = time.time()
 	appcache = """CACHE MANIFEST
 
