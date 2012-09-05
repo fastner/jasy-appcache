@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-def cacheManifest(scripts = ["script/application-%s.js"], htmlfile = "index.html", kernel = "script/kernel.js"):
+def cacheManifest(scripts = ["script/application-%s.js"], htmlfile = "index.html", kernel = "script/kernel.js", ignoreAssets=True):
 	timestamp = time.time()
 	appcache = """CACHE MANIFEST
 

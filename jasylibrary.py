@@ -17,11 +17,32 @@
 # limitations under the License.
 #
 
-import time
+import time, json
+
+
+def filenamesFromAsset(prefix, section, profiles, entries=None):
+	if (entries == None):
+		entries = []
+	
+	if section:
+		for filename in section:
+			entry = section[filename]
+			if (len(prefix) > 0):
+				id = prefix + "/" + filename
+			else:
+				id = filename
+			
+			if "p" in entry:
+				entries.append(profiles[entry["p"]]["root"] + id)
+			else:
+				filenamesFromAsset(id, entry, profiles, entries)
+		
+	return entries
+		
 
 @share
-def cacheManifest(state, scripts = ["script/application-%s.js"], htmlfile = "index.html", kernel = "script/kernel.js"):
-	timestamp = time.time()
+def cacheManifest(state, scripts = ["script/application-%s.js"], htmlfile = "index.html", kernel = "script/kernel.js", ignoreAssets=False):
+	timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
 	appcache = """CACHE MANIFEST
 
 # Jasy AppCache Manifest file
@@ -31,6 +52,7 @@ CACHE:
 {htmlfile}
 {kernel}
 {scripts}
+{assets}
 
 NETWORK:
 *"""
@@ -39,15 +61,22 @@ NETWORK:
 
 	# Create an application cache file for each permutation
 	for permutation in state.session.permutate():
+		if ignoreAssets:
+			assets = []
+		else:
+			classes = state.Resolver().getIncludedClasses()
+			assetConfig = json.loads(state.assetManager.export(classes))
+			assets = filenamesFromAsset("", assetConfig["assets"], assetConfig["profiles"])
+		
 		# Set options
 		checksum = permutation.getChecksum()
 		
-		scriptFiles = ""
+		scriptFiles = []
 		for script in scripts:
-			scriptFiles += (script % checksum) + "\n"
+			scriptFiles.append(script % checksum)
 		
 		manifestFilename = "appcache-%s.manifest" % (checksum)
-		state.writeFile(manifestFilename, appcache.format(version=str(timestamp), htmlfile=htmlfile, kernel=kernel, scripts=scriptFiles))
+		state.writeFile(manifestFilename, appcache.format(version=timestamp, htmlfile=htmlfile, kernel=kernel, scripts="\n".join(scriptFiles), assets="\n".join(assets)))
 		
 		state.writeFile("index-%s.html" % (checksum), htmlcache % (manifestFilename))
 
