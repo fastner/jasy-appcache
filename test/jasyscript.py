@@ -15,8 +15,8 @@ def distclean():
 
 @task("Build")
 def build():
-	assetManager.addBuildProfile()
-	assetManager.deploy(Resolver().addClassName(NAMESPACE).getIncludedClasses())
+	session.getAssetManager().addBuildProfile()
+	session.getAssetManager().deploy(Resolver().addClassName(NAMESPACE).getIncludedClasses())
 	kernelClasses = storeKernel("script/kernel.js")
 
 	sortedClasses = Resolver().addClassName(NAMESPACE).excludeClasses(kernelClasses).getSortedClasses()
@@ -33,7 +33,7 @@ def source():
 	jsOptimization.disable("declarations")
 	jsOptimization.disable("blocks")
 	
-	assetManager.addSourceProfile()
+	session.getAssetManager().addSourceProfile()
 	resolver = Resolver().addClassName(NAMESPACE)
 	
 	kernelClasses = storeKernel("script/kernel.js")
