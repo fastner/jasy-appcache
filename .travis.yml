@@ -1,0 +1,5 @@
+language: python
+python:
+  - "3.2"
+install: "pip install -r .travis.requirements --use-mirrors"
+script: phantomjs test/run-qunit.js

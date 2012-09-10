@@ -1,0 +1,1 @@
+-e git+https://github.com/fastner/jasy.git@unify-working#egg=jasy
