@@ -4,5 +4,5 @@ python:
 install: "pip install -r .travis.requirements --use-mirrors"
 before_script:
   - cd test && jasy run &
-  - sleep 5
+  - sleep 10
 script: cd test && jasy source && phantomjs run-qunit.js http://localhost:8080/source/index.html
