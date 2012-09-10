@@ -1,7 +1,7 @@
 {
 	"name" : "appcache",
 	"requires" : [{
-		"source" : "https://github.com/zynga/core.git",
-		"version" : "refs/tags/0.7"
+		"source" : "https://github.com/fastner/core.git",
+		"version" : "m/0.8-beta2"
 	}]
 }
