@@ -20,6 +20,13 @@
 import time, json
 
 
+def getAssetManager(state):
+	if hasattr(state, "assetManager"):
+		return state.assetManager
+	else:
+		return state.session.getAssetManager()
+
+
 def filenamesFromAsset(prefix, section, profiles, entries=None):
 	if (entries == None):
 		entries = []
@@ -65,7 +72,7 @@ NETWORK:
 			assets = []
 		else:
 			classes = state.Resolver().getIncludedClasses()
-			assetConfig = json.loads(state.assetManager.export(classes))
+			assetConfig = json.loads(getAssetManager(state).export(classes))
 			assets = filenamesFromAsset("", assetConfig["assets"], assetConfig["profiles"])
 		
 		# Set options
