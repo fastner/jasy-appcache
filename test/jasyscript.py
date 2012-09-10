@@ -40,4 +40,7 @@ def source():
 
 	sortedClasses = Resolver().addClassName(NAMESPACE).excludeClasses(kernelClasses).getSortedClasses()
 	storeLoader(sortedClasses, "script/main.js")
-	
+
+@task
+def run():
+	serve()	
