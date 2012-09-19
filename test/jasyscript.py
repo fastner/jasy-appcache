@@ -45,4 +45,4 @@ def source():
 
 @task
 def run():
-	serve()	
+	Server().start()
