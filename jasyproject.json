@@ -2,6 +2,6 @@
 	"name" : "appcache",
 	"requires" : [{
 		"source" : "https://github.com/zynga/core.git",
-		"version" : "0.8-beta3"
+		"version" : "0.8"
 	}]
 }
