@@ -1,1 +1,1 @@
--e git+https://github.com/fastner/jasy.git@unify-working#egg=jasy
+-e git+https://github.com/zynga/jasy.git@master#egg=jasy
