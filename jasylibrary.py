@@ -18,13 +18,9 @@
 #
 
 import time, json
-
-
-def getAssetManager(state):
-	if hasattr(state, "assetManager"):
-		return state.assetManager
-	else:
-		return state.session.getAssetManager()
+from jasy.asset.Manager import AssetManager
+from jasy.core.FileManager import FileManager
+from jasy.js.Resolver import Resolver
 
 
 def filenamesFromAsset(prefix, section, profiles, entries=None):
@@ -48,7 +44,7 @@ def filenamesFromAsset(prefix, section, profiles, entries=None):
 		
 
 @share
-def cacheManifest(state, scripts = ["script/application-%s.js"], htmlfile = "index.html", kernel = "script/kernel.js", ignoreAssets=False):
+def cacheManifest(session, scripts = ["script/application-%s.js"], htmlfile = "index.html", kernel = "script/kernel.js", ignoreAssets=False):
 	timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
 	appcache = """CACHE MANIFEST
 
@@ -65,14 +61,16 @@ NETWORK:
 *"""
 
 	htmlcache = '<!DOCTYPE html><html manifest="%s"></html>'
+	assetManager = AssetManager(session)
+	fileManager = FileManager(session)
 
 	# Create an application cache file for each permutation
-	for permutation in state.session.permutate():
+	for permutation in session.permutate():
 		if ignoreAssets:
 			assets = []
 		else:
-			classes = state.Resolver().getIncludedClasses()
-			assetConfig = json.loads(getAssetManager(state).export(classes))
+			classes = Resolver(session).getIncludedClasses()
+			assetConfig = json.loads(assetManager.export(classes))
 			assets = filenamesFromAsset("", assetConfig["assets"], assetConfig["profiles"])
 		
 		# Set options
@@ -82,8 +80,8 @@ NETWORK:
 		for script in scripts:
 			scriptFiles.append(script % checksum)
 		
-		manifestFilename = "appcache-%s.manifest" % (checksum)
-		state.writeFile(manifestFilename, appcache.format(version=timestamp, htmlfile=htmlfile, kernel=kernel, scripts="\n".join(scriptFiles), assets="\n".join(assets)))
+		manifestFilename = "$prefix/appcache-%s.manifest" % (checksum)
+		fileManager.writeFile(manifestFilename, appcache.format(version=timestamp, htmlfile=htmlfile, kernel=kernel, scripts="\n".join(scriptFiles), assets="\n".join(assets)))
 		
-		state.writeFile("index-%s.html" % (checksum), htmlcache % (manifestFilename))
+		fileManager.writeFile("$prefix/index-%s.html" % (checksum), htmlcache % (manifestFilename))
 
