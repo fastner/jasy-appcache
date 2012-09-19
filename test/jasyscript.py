@@ -41,7 +41,7 @@ def source():
 	kernelClasses = outputManager.storeKernel("$prefix/script/kernel.js", debug=True)
 
 	sortedClasses = Resolver(session).addClassName(NAMESPACE).getSortedClasses()
-	outputManager.storeLoader(sortedClasses, "$prefix/script/main.js")
+	outputManager.storeLoader(sortedClasses, "$prefix/script/main.js", "window.upstart();")
 
 @task
 def run():
