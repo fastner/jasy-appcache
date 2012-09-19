@@ -15,31 +15,33 @@ def distclean():
 
 @task("Build")
 def build():
-	session.getAssetManager().addBuildProfile()
-	session.getAssetManager().deploy(Resolver().addClassName(NAMESPACE).getIncludedClasses())
-	kernelClasses = storeKernel("script/kernel.js")
+	assetManager = AssetManager(session)
+	fileManager = FileManager(session)
+	outputManager = OutputManager(session, assetManager)
+	
+	assetManager.addBuildProfile()
+	assetManager.deploy(Resolver(session).addClassName(NAMESPACE).getIncludedClasses())
+	
+	outputManager.storeKernel("$prefix/script/kernel.js")
 
-	sortedClasses = Resolver().addClassName(NAMESPACE).excludeClasses(kernelClasses).getSortedClasses()
-	storeCompressed(sortedClasses, "script/main.js")
-	copyFile("source/index.html", "index.html")
+	sortedClasses = Resolver(session).addClassName(NAMESPACE).getSortedClasses()
+	outputManager.storeCompressed(sortedClasses, "$prefix/script/main.js")
+	fileManager.copyFile("source/index.html", "$prefix/index.html")
 
 
 @task("Source")
 def source():
-	jsFormatting.enable("comma")
-	jsFormatting.enable("semicolon")
-	jsOptimization.disable("privates")
-	jsOptimization.disable("variables")
-	jsOptimization.disable("declarations")
-	jsOptimization.disable("blocks")
+	assetManager = AssetManager(session)
+	fileManager = FileManager(session)
+	outputManager = OutputManager(session, assetManager, 0, 1)
 	
-	session.getAssetManager().addSourceProfile()
-	resolver = Resolver().addClassName(NAMESPACE)
+	assetManager.addSourceProfile()
+	resolver = Resolver(session).addClassName(NAMESPACE)
 	
-	kernelClasses = storeKernel("script/kernel.js")
+	kernelClasses = outputManager.storeKernel("$prefix/script/kernel.js", debug=True)
 
-	sortedClasses = Resolver().addClassName(NAMESPACE).excludeClasses(kernelClasses).getSortedClasses()
-	storeLoader(sortedClasses, "script/main.js")
+	sortedClasses = Resolver(session).addClassName(NAMESPACE).getSortedClasses()
+	outputManager.storeLoader(sortedClasses, "$prefix/script/main.js")
 
 @task
 def run():
