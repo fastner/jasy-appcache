@@ -30,7 +30,7 @@
 		start : function(baseURL) {
 			if (!!appCache) {
 				var iframe = document.createElement("iframe");
-				core.bom.Style.set(iframe, {
+				lowland.bom.Style.set(iframe, {
 					position: "absolute",
 					top: "-5000px",
 					width: "1px",
