@@ -80,8 +80,8 @@ NETWORK:
 		for script in scripts:
 			scriptFiles.append(script % checksum)
 		
-		manifestFilename = "$prefix/appcache-%s.manifest" % (checksum)
-		fileManager.writeFile(manifestFilename, appcache.format(version=timestamp, htmlfile=htmlfile, kernel=kernel, scripts="\n".join(scriptFiles), assets="\n".join(assets)))
+		manifestFilename = "appcache-%s.manifest" % (checksum)
+		fileManager.writeFile("$prefix/" + manifestFilename, appcache.format(version=timestamp, htmlfile=htmlfile, kernel=kernel, scripts="\n".join(scriptFiles), assets="\n".join(assets)))
 		
-		fileManager.writeFile("$prefix/index-%s.html" % (checksum), htmlcache % session.expandFileName(manifestFilename))
+		fileManager.writeFile("$prefix/index-%s.html" % (checksum), htmlcache % manifestFilename)
 
