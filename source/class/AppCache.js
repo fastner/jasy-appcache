@@ -38,7 +38,8 @@
 				});
 
 				var src = baseURL ? baseURL : '';
-				src += 'index-' + jasy.Env.CHECKSUM + '.html';
+				var checksum = jasy.Env.CHECKSUM || jasy.Env.getChecksum();
+				src += 'index-' + checksum + '.html';
 				iframe.src = src;
 				
 				document.body.appendChild(iframe);
