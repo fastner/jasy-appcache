@@ -46,6 +46,14 @@ def filenamesFromAsset(prefix, section, profiles, entries=None):
 
 @share
 def cacheManifest(session, startClassName, scripts = ["script/application-%s.js"], htmlfile = "index.html", kernel = "script/kernel.js", ignoreAssets=False):
+	# Check for new jasy replacement system (1.1.0-rc4)                                                                                                                                  
+        if session.expandFileName("{{id}}") != "{{id}}":
+                PREFIX = "{{prefix}}"
+                HASH = "{{id}}"
+        else:
+                PREFIX = "$prefix"
+                HASH = "$permutation"
+
 	timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
 	appcache = """CACHE MANIFEST
 
@@ -76,14 +84,17 @@ NETWORK:
 			assets = filenamesFromAsset("", assetConfig["assets"], assetConfig["profiles"])
 
 		# Set options
-		checksum = permutation.getChecksum()
+		if permutation.getId:
+			checksum = permutation.getId()
+		else:
+			checksum = permutation.getChecksum()
 		
 		scriptFiles = []
 		for script in scripts:
 			scriptFiles.append(script % checksum)
 		
 		manifestFilename = "appcache-%s.manifest" % (checksum)
-		fileManager.writeFile("$prefix/" + manifestFilename, appcache.format(version=timestamp, htmlfile=htmlfile, kernel=kernel, scripts="\n".join(scriptFiles), assets="\n".join(assets)))
+		fileManager.writeFile(PREFIX + "/" + manifestFilename, appcache.format(version=timestamp, htmlfile=htmlfile, kernel=kernel, scripts="\n".join(scriptFiles), assets="\n".join(assets)))
 		
-		fileManager.writeFile("$prefix/index-%s.html" % (checksum), htmlcache % manifestFilename)
+		fileManager.writeFile(PREFIX + "/index-%s.html" % (checksum), htmlcache % manifestFilename)
 
