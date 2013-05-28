@@ -47,12 +47,12 @@ def filenamesFromAsset(prefix, section, profiles, entries=None):
 @share
 def cacheManifest(session, startClassName, scripts = ["script/application-%s.js"], htmlfile = "index.html", kernel = "script/kernel.js", ignoreAssets=False):
 	# Check for new jasy replacement system (1.1.0-rc4)                                                                                                                                  
-        if session.expandFileName("{{id}}") != "{{id}}":
-                PREFIX = "{{prefix}}"
-                HASH = "{{id}}"
-        else:
-                PREFIX = "$prefix"
-                HASH = "$permutation"
+	if session.expandFileName("{{id}}") != "{{id}}":
+		PREFIX = "{{prefix}}"
+		HASH = "{{id}}"
+	else:
+		PREFIX = "$prefix"
+		HASH = "$permutation"
 
 	timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
 	appcache = """CACHE MANIFEST
