@@ -84,7 +84,7 @@ NETWORK:
 			assets = filenamesFromAsset("", assetConfig["assets"], assetConfig["profiles"])
 
 		# Set options
-		if permutation.getId:
+		if hasattr(permutation, "getId"):
 			checksum = permutation.getId()
 		else:
 			checksum = permutation.getChecksum()
