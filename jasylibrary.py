@@ -87,7 +87,7 @@ NETWORK:
 		if hasattr(permutation, "getId"):
 			checksum = permutation.getId()
 		else:
-			checksum = permutation.getChecksum()
+			checksum = session.expandFileName(HASH) #instead of permutation.getChecksum()
 		
 		scriptFiles = []
 		for script in scripts:
