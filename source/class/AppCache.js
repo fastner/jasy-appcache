@@ -3,7 +3,8 @@
  * AppCache for Jasy - App cache supporting library
  *
  *
- * Copyright (C) 2012 Sebastian Fastner, Mainz, Germany
+ * Copyright (C) 2012-2014 Sebastian Fastner, Mainz, Germany
+ * Copyright (C) 2015 Sebastian Software GmbH, Mainz, Germany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
