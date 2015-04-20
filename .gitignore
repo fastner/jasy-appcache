@@ -3,3 +3,4 @@ build
 source/script
 jasycache.db
 .jasy
+**/source/js
