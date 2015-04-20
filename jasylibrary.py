@@ -97,6 +97,7 @@ NETWORK:
 		for part in parts:
 			if part != KERNEL_NAME:
 				scripts.append(profile.expandFileName("js/%s-{{id}}.js" % part))
+				assets.append(profile.expandFileName("css/%s-{{id}}.css" % part))
 
 		# TODO: How to get permutated asset list?
 		for (srcFile, dstFile) in assetManager.getAssetList():
