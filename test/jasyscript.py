@@ -42,6 +42,13 @@ def source():
 
 	# Start actual build
 	Build.run(profile)
+
+	import fileinput
+	textToSearch = "((function(){return this})())"
+	textToReplace = ")(window"
+	for line in fileinput.input("source/js/kernel.js", inplace=True):
+		print(line.replace(textToSearch, textToReplace), end='')
+	
 	
 
 @task
