@@ -1,7 +1,0 @@
-{
-	"name" : "appcache",
-	"requires" : [{
-		"source" : "https://github.com/fastner/lowland.git",
-		"version" : "features/core-update-next-2"
-	}]
-}

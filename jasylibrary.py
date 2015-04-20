@@ -18,11 +18,18 @@
 #
 
 import time, json
+import os.path
+
 from jasy.asset.Manager import AssetManager
 from jasy.core.FileManager import FileManager
-from jasy.core.OutputManager import OutputManager
-from jasy.js.Resolver import Resolver
 
+import jasy.core.Console as Console
+
+import jasy.build.Asset as AssetBuilder
+import jasy.build.Script as ScriptBuilder
+import jasy.build.Style as StyleBuilder
+
+KERNEL_NAME = "kernel"
 
 def filenamesFromAsset(prefix, section, profiles, entries=None):
 	if (entries == None):
@@ -45,14 +52,9 @@ def filenamesFromAsset(prefix, section, profiles, entries=None):
 		
 
 @share
-def cacheManifest(session, startClassName, scripts = ["script/application-%s.js"], htmlfile = "index.html", kernel = "script/kernel.js", ignoreAssets=False):
-	# Check for new jasy replacement system (1.1.0-rc4)                                                                                                                                  
-	if session.expandFileName("{{id}}") != "{{id}}":
-		PREFIX = "{{prefix}}"
-		HASH = "{{id}}"
-	else:
-		PREFIX = "$prefix"
-		HASH = "$permutation"
+def cacheManifest(profile):
+	PREFIX = "{{prefix}}"
+	HASH = "{{id}}"
 
 	timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
 	appcache = """CACHE MANIFEST
@@ -62,14 +64,56 @@ def cacheManifest(session, startClassName, scripts = ["script/application-%s.js"
 
 CACHE:
 {htmlfile}
-{kernel}
 {scripts}
 {assets}
 
 NETWORK:
 *"""
 
-	htmlcache = '<!DOCTYPE html><html manifest="%s"></html>'
+	htmlcache = '<!DOCTYPE html><html manifest="{manifestfile}"></html>'
+
+	destinationPath = profile.getDestinationPath()
+
+	fileManager = FileManager(profile)
+	session = profile.getSession()
+	parts = profile.getParts()
+
+	assetBuilder = AssetBuilder.AssetBuilder(profile)
+	scriptBuilder = ScriptBuilder.ScriptBuilder(profile)
+	styleBuilder = StyleBuilder.StyleBuilder(profile)
+
+	assetManager = profile.getAssetManager()
+	
+	htmlfile = "index.html"
+
+	for permutation in profile.permutate():
+		scripts = []
+		assets = []
+
+		if KERNEL_NAME in parts:
+			scripts.append("js/kernel.js")
+
+		for part in parts:
+			if part != KERNEL_NAME:
+				scripts.append(profile.expandFileName("js/%s-{{id}}.js" % part))
+
+		# TODO: How to get permutated asset list?
+		for (srcFile, dstFile) in assetManager.getAssetList():
+			assets.append(os.path.relpath(dstFile, profile.getDestinationPath()))
+
+		appcacheFilename = "appcache-{{id}}.manifest"
+		fileManager.writeFile(
+			"{{destination}}/" + appcacheFilename,
+			appcache.format(version=timestamp, htmlfile=htmlfile, scripts="\n".join(scripts), assets="\n".join(assets))
+		)
+		fileManager.writeFile("{{destination}}/index-{{id}}.html", htmlcache.format(manifestfile=profile.expandFileName(appcacheFilename)))
+		Console.info("Generate manifest file...")
+
+
+
+"""
+
+
 	assetManager = AssetManager(session).addBuildProfile()
 	outputManager = OutputManager(session, assetManager)
 	fileManager = FileManager(session)
@@ -98,3 +142,4 @@ NETWORK:
 		
 		fileManager.writeFile(PREFIX + "/index-%s.html" % (checksum), htmlcache % manifestFilename)
 
+"""
