@@ -2,7 +2,7 @@ name: "appcacheTest"
 requires:
 - ".."
 - source: https://github.com/jquery/qunit.git
-  version: refs/tags/v1.8.0
+  version: refs/tags/v1.14.0
   config:
     content:
       QUnit:
