@@ -46,4 +46,6 @@ def source():
 
 @task
 def run():
+	session.pause()
 	Server().start()
+	session.resume()
