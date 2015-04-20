@@ -1,47 +1,48 @@
 
-NAMESPACE = "appcacheTest.Test"
+profile = Profile(session)
+profile.registerPart("kernel", className="appcacheTest.Test")
+
 
 @task("Clean")
 def clean():
-	session.clean()
+	core.clean()
 
 
 @task("Distclean")
 def distclean():
-	session.clean()
-	removeDir("build")
-	removeDir("source/script")
+	core.distclean()
 
 
 @task("Build")
 def build():
-	assetManager = AssetManager(session)
-	fileManager = FileManager(session)
-	outputManager = OutputManager(session, assetManager)
-	
-	assetManager.addBuildProfile()
-	assetManager.deploy(Resolver(session).addClassName(NAMESPACE).getIncludedClasses())
-	
-	outputManager.storeKernel("$prefix/script/kernel.js")
+	"""Generate deployable and combined build version"""
 
-	sortedClasses = Resolver(session).addClassName(NAMESPACE).getSortedClasses()
-	outputManager.storeCompressed(sortedClasses, "$prefix/script/main.js")
-	fileManager.copyFile("source/index.html", "$prefix/index.html")
+	# Enable both debugging and final
+	profile.permutateField("debug")
+
+	# Enable copying and hashing of assets
+	profile.setHashAssets(True)
+	profile.setCopyAssets(True)
+
+	# Start actual build
+	Build.run(profile)
+
+	profile.getFileManager().copyFile("source/index.html", "{{destination}}/index.html")
+
+	appcache.cacheManifest(profile)
 
 
 @task("Source")
 def source():
-	assetManager = AssetManager(session)
-	fileManager = FileManager(session)
-	outputManager = OutputManager(session, assetManager, 0, 1)
-	
-	assetManager.addSourceProfile()
-	resolver = Resolver(session).addClassName(NAMESPACE)
-	
-	kernelClasses = outputManager.storeKernel("$prefix/script/kernel.js", debug=True)
+	# Force debug enabled
+	profile.setField("debug", True)
 
-	sortedClasses = Resolver(session).addClassName(NAMESPACE).getSortedClasses()
-	outputManager.storeLoader(sortedClasses, "$prefix/script/main.js", "window.upstart();")
+	# Load all scripts/assets from source folder
+	profile.setUseSource(True)
+
+	# Start actual build
+	Build.run(profile)
+	
 
 @task
 def run():

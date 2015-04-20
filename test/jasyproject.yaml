@@ -1,0 +1,15 @@
+name: "appcacheTest"
+requires:
+- ".."
+- source: https://github.com/jquery/qunit.git
+  version: refs/tags/v1.8.0
+  config:
+    content:
+      QUnit:
+        type: jasy.Script
+        source:
+        - qunit/qunit.js
+      qunit.css:
+        type: jasy.Style
+        source:
+        - qunit/qunit.css
